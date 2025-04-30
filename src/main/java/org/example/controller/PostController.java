@@ -20,6 +20,11 @@ import java.util.List;
 @RequestMapping("/post")
 @RequiredArgsConstructor
 public class PostController {
-    private final PostService postService;
+  private final PostService postService;
+
+  @PostMapping()
+  public PostDto create(@Valid @RequestBody PostDto postDto) {
+    return postService.create(postDto);
+  }
 
 }
