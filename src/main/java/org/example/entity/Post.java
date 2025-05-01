@@ -1,15 +1,10 @@
-package faang.school.postservice.model;
+package org.example.entity;
 
-import faang.school.postservice.model.ad.Ad;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -21,7 +16,6 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -31,36 +25,40 @@ import java.util.List;
 @Table(name = "post")
 public class Post {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(name = "content", nullable = false, length = 4096)
-    private String content;
+  @Column(name = "content", nullable = false, length = 4096)
+  private String content;
 
-    @Column(name = "author_id")
-    private Long authorId;
+  @Column(name = "author_id")
+  private Long authorId;
 
-    @Column(name = "published", nullable = false)
-    private boolean published;
+  @Column(name = "published", nullable = false)
+  private boolean published;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "published_at")
-    private LocalDateTime publishedAt;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "published_at")
+  private LocalDateTime publishedAt;
 
-    @Column(name = "deleted", nullable = false)
-    private boolean deleted;
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "scheduled_at")
+  private LocalDateTime scheduledAt;
 
-    @CreationTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
+  @Column(name = "deleted", nullable = false)
+  private boolean deleted;
 
-    @UpdateTimestamp
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+  @CreationTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "created_at")
+  private LocalDateTime createdAt;
 
-    @Column(name = "number_views")
-    private Long numberViews;
+  @UpdateTimestamp
+  @Temporal(TemporalType.TIMESTAMP)
+  @Column(name = "updated_at")
+  private LocalDateTime updatedAt;
+
+  @Column(name = "number_views")
+  private Long numberViews;
 }
