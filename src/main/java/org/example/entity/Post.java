@@ -35,7 +35,7 @@ public class Post {
   @Column(name = "author_id")
   private Long authorId;
 
-  @Column(name = "published", nullable = false)
+  @Column(name = "published")
   private boolean published;
 
   @Temporal(TemporalType.TIMESTAMP)
@@ -51,7 +51,7 @@ public class Post {
 
   @CreationTimestamp
   @Temporal(TemporalType.TIMESTAMP)
-  @Column(name = "created_at")
+  @Column(name = "created_at", nullable = false)
   private LocalDateTime createdAt;
 
   @UpdateTimestamp
@@ -59,6 +59,6 @@ public class Post {
   @Column(name = "updated_at")
   private LocalDateTime updatedAt;
 
-  @Column(name = "number_views")
-  private Long numberViews;
+  @Column(name = "number_views", nullable = false)
+  private long numberViews;
 }

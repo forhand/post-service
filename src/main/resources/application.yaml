@@ -25,9 +25,16 @@ liquibase:
 messages:
   basename: messages
 
-server:
-  port: 8081
-
 logging:
   level:
     root: info
+
+client:
+  user-service:
+    name: user-service
+    host: localhost
+    port: 8080
+    base-path: /api/users
+
+server:
+  port: 8081

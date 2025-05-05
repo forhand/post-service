@@ -1,10 +1,12 @@
 plugins {
     java
+//    id("org.springframework.boot") version "3.1.2"
+//    id("io.spring.dependency-management") version "1.1.2"
     id("org.springframework.boot") version "3.0.6"
     id("io.spring.dependency-management") version "1.1.0"
 }
 
-group = "faang.school"
+group = "org.example"
 version = "1.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
