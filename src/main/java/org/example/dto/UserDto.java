@@ -1,33 +1,29 @@
 package org.example.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.example.entity.contact.PreferredContact;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
 import java.util.List;
 
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
+public class UserDto implements Serializable {
+
   private Long id;
+  @NotBlank
   private String username;
+  private int age;
+  @NotBlank
   private String email;
-  private String phone;
-  private String password;
+  private PreferredContact preferredContact;
   private boolean active;
-  private String aboutMe;
-  private long countryId;
-  private String city;
-  private Integer experience;
-  private LocalDateTime createdAt;
-  private LocalDateTime updatedAt;
-  private List<Long> ownedEventsIds;
-  private List<Long> followers;
-  private List<Long> followees;
-  private List<Long> menteesIds;
-  private List<Long> mentorsIds;
-  private List<Long> setGoalsIds;
-  private List<Long> goalsIds;
+  private List<Long> followerIds;
+  private List<Long> followeeIds;
 }

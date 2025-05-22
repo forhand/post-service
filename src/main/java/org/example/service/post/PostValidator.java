@@ -25,6 +25,8 @@ public class PostValidator {
   public void validateBeforeUpdate(PostDto dto, Post entity) {
     ensurePostIsNotDeleted(entity);
     ensureAuthorHasNotBeenChanged(dto.getAuthorId(), entity.getAuthorId());
+
+
   }
 
   public void validateBeforePublish(Post post) {

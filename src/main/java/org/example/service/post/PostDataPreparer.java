@@ -28,6 +28,7 @@ public class PostDataPreparer {
             && post.isPublished()) {
       postDto.setScheduledAt(null);
     }
+    postDto.setPublished(post.isPublished());
     return postDto;
   }
 }

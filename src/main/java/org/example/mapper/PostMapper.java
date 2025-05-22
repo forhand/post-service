@@ -13,12 +13,16 @@ import java.util.List;
 public interface PostMapper {
 
   PostDto toDto(Post entity);
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "numberViews", ignore = true)
+
+  @Mapping(target = "id", source = "id", ignore = true)
+  @Mapping(target = "numberViews", source = "numberViews", ignore = true)
   Post toEntity(PostDto dto);
 
-  @Mapping(target = "id", ignore = true)
-  @Mapping(target = "numberViews", ignore = true)
+  //
+//  @Mapping(target = "id", ignore = true)
+//  @Mapping(target = "numberViews", ignore = true)
+  @Mapping(target = "id", source = "id", ignore = true)
+  @Mapping(target = "numberViews", source = "numberViews", ignore = true)
   void update(@MappingTarget Post post, PostDto postDto);
 
   List<PostDto> entitiesToDtos(List<Post> entities);

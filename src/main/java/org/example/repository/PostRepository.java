@@ -17,4 +17,7 @@ public interface PostRepository extends CrudRepository<Post, Long> {
   @Query("SELECT p FROM Post p WHERE p.authorId = :authorId AND p.published = false ORDER BY p.createdAt ASC")
   List<Post> findNotPublishedPostsByAuthor(@Param("authorId") Long authorId);
 
+  @Query("SELECT p FROM Post p WHERE p.published = false AND p.deleted = false AND p.scheduledAt <= CURRENT_TIMESTAMP")
+  List<Post> findReadyToPublish();
+
 }
