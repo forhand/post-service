@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,11 +25,11 @@ public class PostController {
   private final PostService postService;
 
   @PostMapping()
-  public PostDto create(@RequestBody @NotNull @Valid PostDto postDto) {
+  public PostDto create(@RequestBody @Valid PostDto postDto) {
     return postService.create(postDto);
   }
 
-  @PatchMapping("/{postId}/publish")
+  @PutMapping("/{postId}/publish")
   public PostDto publish(@PathVariable("postId") @Positive Long postId) {
     return postService.publish(postId);
   }

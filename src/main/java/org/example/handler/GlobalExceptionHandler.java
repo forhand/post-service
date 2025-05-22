@@ -5,25 +5,42 @@ import lombok.extern.slf4j.Slf4j;
 import org.example.handler.exception.AuthorChangeForbiddenException;
 import org.example.handler.exception.PostAlreadyPublishedException;
 import org.example.handler.exception.ResourceNotFoundException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+  @ExceptionHandler(HttpMessageNotReadableException.class)
+  @ResponseStatus(HttpStatus.BAD_REQUEST)
+  public ErrorResponse handleHttpMessageNotReadableException(
+          HttpMessageNotReadableException exception,
+          HttpServletRequest request) {
+    log.error("Error while validating post creation: {}", exception.getMessage(), exception);
+    return buildErrorResponse(request.getRequestURI(), HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+  }
+
   @ExceptionHandler(MethodArgumentNotValidException.class)
   @ResponseStatus(HttpStatus.BAD_REQUEST)
   public ErrorResponse handleMethodArgumentNotValidException(
           MethodArgumentNotValidException exception,
-          HttpServletRequest request) {
-    log.error("Error while validating post creation: {}", exception.getMessage(), exception);
-    return buildErrorResponse(request.getRequestURI(), HttpStatus.BAD_REQUEST.value(), exception.getMessage());
+          HttpServletRequest rq) {
+    BindingResult result = exception.getBindingResult();
+    List<String> errorMessages = result.getFieldErrors().stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .toList();
+    log.error("MethodArgumentNotValidException: {}", exception.getMessage(), exception);
+    return buildErrorResponse(rq.getRequestURI(), HttpStatus.BAD_REQUEST.value(), "Invalid request body",errorMessages);
   }
 
   @ExceptionHandler(PostAlreadyPublishedException.class)
@@ -69,5 +86,11 @@ public class GlobalExceptionHandler {
             .status(httpStatus)
             .message(message)
             .build();
+  }
+
+  private ErrorResponse buildErrorResponse(String requestURI, int httpStatus, String message, List<String> errorMessages) {
+    ErrorResponse errorResponse = buildErrorResponse(requestURI, httpStatus, message);
+    errorResponse.setErrors(errorMessages);
+    return errorResponse;
   }
 }

@@ -9,7 +9,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
-    show-sql: true
+#    show-sql: true
     properties:
       hibernate:
         jdbc:
@@ -18,6 +18,25 @@ spring:
         order_updates: true
         batch_versioned_data: true
         format_sql: true
+
+  data:
+    redis:
+      port: 6379
+      host: localhost
+
+  cache:
+    type: redis
+    redis:
+      cache-manager-ref: redisCacheManager
+      time-to-live: PT60S # Время жизни кэша (можно настроить индивидуально)
+    post:
+      name: post
+      ttl:
+        duration:
+          second: 3600
+          minute: 10
+    feed:
+      limit: 500
 
 liquibase:
   change-log: classpath:db/changelog/db.changelog-master.yaml
@@ -29,12 +48,18 @@ logging:
   level:
     root: info
 
+scheduling:
+  publishing_post:
+    cron: 0/10 * * * * *
+
 client:
   user-service:
     name: user-service
     host: localhost
     port: 8080
     base-path: /api/users
+  skip_event:
+    header: x-skip-event
 
 server:
   port: 8081

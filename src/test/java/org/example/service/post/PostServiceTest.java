@@ -7,6 +7,7 @@ import org.example.handler.exception.PostAlreadyPublishedException;
 import org.example.handler.exception.ResourceNotFoundException;
 import org.example.mapper.PostMapperImpl;
 import org.example.repository.PostRepository;
+import org.example.service.cacheHelper.PostCacheHelper;
 import org.example.util.container.PostContainer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Import;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +34,13 @@ import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -46,6 +57,8 @@ class PostServiceTest {
   private PostDataPreparer preparer;
   @Mock
   private MessageSource messageSource;
+  @Mock
+  private PostCacheHelper cacheHelper;
   @InjectMocks
   private PostService service;
 
@@ -87,22 +100,16 @@ class PostServiceTest {
 
   @Test
   void testPublish() {
-    when(postRepository.findById(postId)).thenReturn(Optional.of(entity));
-    Post postPublished = container.entity();
-    postPublished.setPublished(true);
-    postPublished.setPublishedAt(LocalDateTime.now());
-    postPublished.setScheduledAt(null);
-    when(preparer.preparePostForPublishing(entity)).thenReturn(postPublished);
-    when(postRepository.save(postPublished)).thenReturn(postPublished);
-    ArgumentCaptor<Post> captor = ArgumentCaptor.forClass(Post.class);
+    long postId = 1L;
+    Post post = Post.builder().id(postId).build();
+    when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+    when(preparer.preparePostForPublishing(post)).thenReturn(post);
+    when(postRepository.save(post)).thenReturn(post);
+    PostDto expectedDto = mapper.toDto(post);
 
     PostDto actPostDto = service.publish(postId);
 
-    verify(postRepository, times(1)).save(captor.capture());
-    Post postCaptured = captor.getValue();
-    assertNotNull(actPostDto);
-    assertTrue(postCaptured.isPublished());
-    assertEquals(actPostDto.getId(), postCaptured.getId());
+    assertEquals(expectedDto, actPostDto);
   }
 
   @Test

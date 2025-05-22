@@ -88,7 +88,9 @@ public class PostContainer {
 
   public List<PostDto> dtos() {
     PostDto dto1 = dto();
+    dto1.setPublished(true);
     PostDto dto2 = dto();
+    dto2.setPublished(true);
     dto2.setId(dto1.getId()+1);
     return new ArrayList<>(List.of(dto1, dto2));
   }
@@ -107,6 +109,20 @@ public class PostContainer {
     post2.setPublished(true);
     post2.setId(post1.getId()+1);
     return new ArrayList<>(List.of(post1, post2));
+  }
+
+  public Post publishedPost() {
+    return Post.builder()
+            .id(postId)
+            .content(content)
+            .authorId(authorId)
+            .published(true)
+            .publishedAt(LocalDateTime.now())
+            .scheduledAt(null)
+            .createdAt(createdAt)
+            .updatedAt(this.publishedAt)
+            .numberViews(numberViews)
+            .build();
   }
 }
 

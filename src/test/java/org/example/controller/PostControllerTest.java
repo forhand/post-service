@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -76,7 +77,8 @@ class PostControllerTest {
     mockMvc.perform(post(uri)
                     .content(objectMapper.writeValueAsString(requestDto))
                     .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.errors", hasSize(1)));
   }
 
   @Test
@@ -97,7 +99,7 @@ class PostControllerTest {
 
     when(service.publish(container.postId())).thenReturn(responseDto);
 
-    mockMvc.perform(patch(uri))
+    mockMvc.perform(put(uri))
             .andExpect(status().isOk())
             .andExpect(jsonPath("$.id").value(responseDto.getId()));
   }
@@ -107,7 +109,7 @@ class PostControllerTest {
     String uri = "%s/%d/publish".formatted(this.uri, container.postId());
     when(service.publish(any())).thenThrow(new PostAlreadyPublishedException(""));
 
-    mockMvc.perform(patch(uri))
+    mockMvc.perform(put(uri))
             .andExpect(status().isBadRequest());
   }
 
@@ -116,7 +118,7 @@ class PostControllerTest {
     String uri = "%s/%d/publish".formatted(this.uri, container.postId());
     when(service.publish(any())).thenThrow(new ResourceNotFoundException(""));
 
-    mockMvc.perform(patch(uri))
+    mockMvc.perform(put(uri))
             .andExpect(status().isNotFound());
   }
 
